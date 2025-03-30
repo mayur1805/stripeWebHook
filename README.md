@@ -14,7 +14,7 @@ This project implements payment creation using Payment Intent and a webhook for 
    ```sh
    git clone <repository-url>
    cd <project-folder>
-   checkout the master branch
+   git checkout master
    ```
 
 2. **Install Dependencies**
