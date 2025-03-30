@@ -50,15 +50,9 @@ This project implements payment creation using Payment Intent and a webhook for 
      ```
    - Copy the generated `https` forwarding URL from Ngrok (e.g., `https://random-id.ngrok.io`)
    - Update Stripe webhook endpoint with the Ngrok URL:
-     ```sh
-     stripe listen --forward-to https://random-id.ngrok.io/api/webhook
-     ```
+
 
 7. **Test the Application**
-   - Test the payment intent endpoint:
-     ```sh
-     curl -X POST http://127.0.0.1:8000/api/create-payment-intent
-     ```
    - Test the webhook endpoint:
      ```sh
      stripe trigger payment_intent.succeeded
