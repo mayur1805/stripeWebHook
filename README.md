@@ -1,63 +1,61 @@
-# Laravel Payment Integration with Webhook Logging
+# Laravel Webhook Handler Microservice
 
-This project implements payment creation using Payment Intent and a webhook for logging payment details into the database.
+This repository contains a Laravel-based microservice to handle webhooks. Follow the steps below to set up and run the project.
 
-## Prerequisites
-- Laravel 11+
-- Composer
-- Stripe API keys
-- Ngrok installed
-- Database configured in `.env`
+## Installation Guide
 
-## Project Setup
-1. **Clone the Repository**
-   ```sh
-   git clone <repository-url>
-   cd <project-folder>
-   git checkout master
-   ```
+### 1. Clone the Project
+```sh
+git clone https://github.com/your-repo/your-project.git
+cd your-project
+```
 
-2. **Install Dependencies**
-   ```sh
-   composer install
-   ```
+### 2. Set Up Laravel Project
+```sh
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+```
 
-3. **Set Up Environment**
-   ```sh
-   cp .env.example .env
-   php artisan key:generate
-   ```
-   Update `.env` file with your Stripe API keys and database credentials:
-   ```env
-   STRIPE_SECRET=<your-stripe-secret-key>
-   STRIPE_WEBHOOK_SECRET=<your-stripe-webhook-secret>
-   ```
+### 3. Add Stripe Variables in .env
+Edit the `.env` file and add your Stripe API credentials:
+```
+STRIPE_KEY=your_stripe_key
+STRIPE_SECRET=your_stripe_secret
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
+```
 
-4. **Run Migrations**
-   ```sh
-   php artisan migrate
-   ```
+### 4. Install Ngrok
+[Download and install Ngrok](https://ngrok.com/download) if you haven't already.
 
-5. **Start the Laravel Server**
-   ```sh
-   php artisan serve
-   ```
+### 5. Start Ngrok Server
+Run the following command to start Ngrok on port 8000:
+```sh
+ngrok http 8000
+```
+Copy the generated HTTPS URL (e.g., `https://your-ngrok-url.ngrok.io`).
 
-6. **Set Up Ngrok for Webhook Testing**
-   - Start Ngrok on port 8000 (default Laravel port):
-     ```sh
-     ngrok http 8000
-     ```
-   - Copy the generated `https` forwarding URL from Ngrok (e.g., `https://random-id.ngrok.io`)
-   - Update Stripe webhook endpoint with the Ngrok URL:
+### 6. Set Up Webhook on Stripe
+- Go to your [Stripe Dashboard](https://dashboard.stripe.com/)
+- Navigate to **Developers > Webhooks**
+- Click **Add endpoint** and paste the Ngrok URL followed by your webhook route, e.g., `https://your-ngrok-url.ngrok.io/api/webhook/stripe`
+- Select the required events and save
 
+### 7. Test the Application
+Run the Laravel server:
+```sh
+php artisan serve
+```
+Trigger Stripe webhook events using the CLI:
+```sh
+stripe trigger payment_intent.succeeded
+```
+Check the Laravel logs to ensure the webhook is received:
+```sh
+tail -f storage/logs/laravel.log
+```
 
-7. **Test the Application**
-   - Test the webhook endpoint:
-     ```sh
-     stripe trigger payment_intent.succeeded
-     ```
-
-## Conclusion
-This setup allows payments to be created using Stripe Payment Intent and logs webhook events in Laravel. Ensure that the webhook is properly configured in the Stripe dashboard for production use. Using Ngrok helps in local testing by exposing your local server to the internet securely.
+## License
+This project is licensed under the MIT License.
 
